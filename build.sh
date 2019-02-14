@@ -2,7 +2,4 @@
 cp ./node_modules/string_decoder/lib/string_decoder.js ./index.js
 
 # replace the safe-buffer import by just buffer
-sed -i -e 's/safe-buffer/buffer/g' ./index.js
-
-# remove the file sed create
-rm ./index.js-e || true
+grep -r -l "require('safe-buffer')" * | grep -v build.sh | grep -v node_modules | xargs sed -i "s/require('safe-buffer')/require('buffer')/g"
