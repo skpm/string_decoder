@@ -53,7 +53,7 @@ function _normalizeEncoding(enc) {
       case 'binary':
         return 'latin1';
       case 'nsdata':
-        return 'NSData';
+        return 'nsdata';
       case 'base64':
       case 'ascii':
       case 'hex':
@@ -80,7 +80,7 @@ function normalizeEncoding(enc) {
 exports.StringDecoder = StringDecoder;
 function StringDecoder(encoding) {
   this.encoding = normalizeEncoding(encoding);
-  var nb;
+  var nb = 0;
   switch (this.encoding) {
     case 'utf16le':
       this.text = utf16Text;
@@ -95,6 +95,10 @@ function StringDecoder(encoding) {
       this.text = base64Text;
       this.end = base64End;
       nb = 3;
+      break;
+    case 'nsdata':
+      this.text = nsDataWrite;
+      this.end = nsDataEnd;
       break;
     default:
       this.write = simpleWrite;
@@ -286,6 +290,14 @@ function base64End(buf) {
   var r = buf && buf.length ? this.write(buf) : '';
   if (this.lastNeed) return r + this.lastChar.toString('base64', 0, 3 - this.lastNeed);
   return r;
+}
+
+function nsDataWrite(buf) {
+  return buf.toNSData();
+}
+
+function nsDataEnd(buf) {
+  return buf && buf.length ? this.write(buf) : NSData.alloc().init();
 }
 
 // Pass bytes on through for single-byte encodings (e.g. ascii, latin1, hex)
