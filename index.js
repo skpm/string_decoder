@@ -29,7 +29,7 @@ var Buffer = require('buffer').Buffer;
 var isEncoding = Buffer.isEncoding || function (encoding) {
   encoding = '' + encoding;
   switch (encoding && encoding.toLowerCase()) {
-    case 'hex':case 'utf8':case 'utf-8':case 'ascii':case 'binary':case 'base64':case 'ucs2':case 'ucs-2':case 'utf16le':case 'utf-16le':case 'raw':
+    case 'hex':case 'utf8':case 'utf-8':case 'ascii':case 'binary':case 'base64':case 'ucs2':case 'ucs-2':case 'utf16le':case 'utf-16le':case 'raw':case 'nsdata':
       return true;
     default:
       return false;
@@ -52,6 +52,8 @@ function _normalizeEncoding(enc) {
       case 'latin1':
       case 'binary':
         return 'latin1';
+      case 'nsdata':
+        return 'NSData';
       case 'base64':
       case 'ascii':
       case 'hex':
